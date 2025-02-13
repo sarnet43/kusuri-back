@@ -19,10 +19,10 @@ $id_result = mysqli_query($conn, $checkSql);
 $cnt = mysqli_num_rows($id_result);
 
 for($i = 0; $i < $cnt; $i++){
-    $re = mysqli_fetch_row($id_result);
-    if($re == $userid){
+    $re = mysqli_fetch_array($id_result);
+    if($re['user_id'] == $userid){
         echo "이미 회원가입 된 아이디입니다.";
-        exit;
+        exit();
     }
 }
 
