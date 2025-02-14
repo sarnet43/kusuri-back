@@ -27,7 +27,9 @@ for($i = 0; $i < $cnt; $i++){
 }
 
 $insertSql = "insert into user(user_id, user_pw) values($userid, $passwd);";
-mysqli_query($conn, $insertSql);
+if(mysqli_query($conn, $insertSql)){
+    echo "회원가입에 성공 했습니다.";
+}
 
 
 

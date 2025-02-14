@@ -1,4 +1,5 @@
 <?php
+session_start();
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Method: POST");
 header("Access-Control-Allow-Header: Content-Type");
@@ -12,7 +13,7 @@ if(!isset($data['userid'], $data['password'])){
 $userid = $data['userid'];
 $userpw = $data['password'];
 
-$selectSql = "select user_id, user_pw from user where user_id = '$userid';";
+$selectSql = "select user_id, user_pw, username from user where user_id = '$userid';";
 $result = mysqli_query($conn, $selectSql);
 $cnt = mysqli_num_rows($result);
 
@@ -20,6 +21,9 @@ if($cnt == 1){
     $re = mysqli_fetch_array($result);
     if(password_verify($userpw, $re['user_pw'])){
         
+        $_SESSION['user_id'] = $re['user_id'];
+        $_SESSION['username'] = $re['username'];
+        echo "로그인 성공";
     }
     else{
         echo "비밀번호가 틀렸습니다.";
