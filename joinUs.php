@@ -18,17 +18,12 @@ $checkSql = "select user_id from user;";
 $id_result = mysqli_query($conn, $checkSql);
 $cnt = mysqli_num_rows($id_result);
 
-for($i = 0; $i < $cnt; $i++){
-    $re = mysqli_fetch_array($id_result);
-    if($re['user_id'] == $userid){
-        echo "이미 회원가입 된 아이디입니다.";
-        exit();
-    }
-}
-
 $insertSql = "insert into user(user_id, user_pw) values($userid, $passwd);";
 if(mysqli_query($conn, $insertSql)){
-    echo "회원가입에 성공 했습니다.";
+    echo json_encode(true);
+}
+else{
+    echo json_encode(false);
 }
 
 

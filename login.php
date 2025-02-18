@@ -20,13 +20,13 @@ $cnt = mysqli_num_rows($result);
 if($cnt == 1){
     $re = mysqli_fetch_array($result);
     if(password_verify($userpw, $re['user_pw'])){
-        
+        //비밀번호 맞았을 시 세션 저장, true 반환
         $_SESSION['user_id'] = $re['user_id'];
         $_SESSION['username'] = $re['username'];
-        echo "로그인 성공";
+        echo json_encode(true);
     }
-    else{
-        echo "비밀번호가 틀렸습니다.";
+    else{ //비밀번호 틀렸을 시 false 반환
+        echo json_encode(false);
     }
 }
 
