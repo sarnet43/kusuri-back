@@ -8,7 +8,7 @@ require_once ("core/Medicine.php");
 
 $userid = $_SESSION['user_id'];
 
-$selectSql = "SELECT * FROM watchedMed WHERE user_id = :userid ORDER BY id DESC  LIMIT 3";
+$selectSql = "SELECT * FROM watchedmed WHERE user_id = :userid ORDER BY id DESC  LIMIT 3";
 $stmt = $conn->prepare($selectSql);
 $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
 
@@ -18,7 +18,5 @@ if ($stmt->execute()) {
 } else {
     echo json_encode(["success" => false, "message" => "불러오기 실패" ], JSON_UNESCAPED_UNICODE);
 }
-
-
 
 ?>
