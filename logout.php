@@ -1,4 +1,8 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Header: Content-Type");
+include("core/db_conn.php");
+
 if (!session_id()) {
   session_start();
 }

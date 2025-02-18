@@ -1,33 +1,47 @@
 <?php
 session_start();
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Method: POST");
-header("Access-Control-Allow-Header: Content-Type");
-include("./db_conn.php");
+header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Headers: Content-Type");
 
+require_once("core/db_conn.php");
+
+// JSON 데이터 받아오기
 $data = json_decode(file_get_contents("php://input"), true);
 
-if(!isset($data['userid'], $data['password'])){
-    echo "모든 필드 채우기";
+if (!isset($data['userid'], $data['password'])) {
+    echo json_encode(["success" => false, "message" => "모든 필드를 입력하세요."]);
+    exit;
 }
-$userid = $data['userid'];
+
+// 입력값 정리
+$userid = trim($data['userid']);
 $userpw = $data['password'];
 
-$selectSql = "select user_id, user_pw, username from user where user_id = '$userid';";
-$result = mysqli_query($conn, $selectSql);
-$cnt = mysqli_num_rows($result);
+try {
+    // 사용자 조회
+    $selectSql = "SELECT user_id, user_pw, username FROM user WHERE user_id = :userid";
+    $stmt = $conn->prepare($selectSql);
+    $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
+    $stmt->execute();
+    
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if($cnt == 1){
-    $re = mysqli_fetch_array($result);
-    if(password_verify($userpw, $re['user_pw'])){
-        //비밀번호 맞았을 시 세션 저장, true 반환
-        $_SESSION['user_id'] = $re['user_id'];
-        $_SESSION['username'] = $re['username'];
-        echo json_encode(true);
+    if ($user) {
+        // 비밀번호 검증
+        if (password_verify($userpw, $user['user_pw'])) {
+            // 세션 저장
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['username'] = $user['username'];
+            
+            echo json_encode(["success" => true, "message" => "로그인 성공"]);
+        } else {
+            echo json_encode(["success" => false, "message" => "비밀번호가 틀렸습니다."]);
+        }
+    } else {
+        echo json_encode(["success" => false, "message" => "존재하지 않는 아이디입니다."]);
     }
-    else{ //비밀번호 틀렸을 시 false 반환
-        echo json_encode(false);
-    }
+} catch (PDOException $e) {
+    echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
 }
-
 ?>
