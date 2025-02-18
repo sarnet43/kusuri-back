@@ -24,11 +24,11 @@ try {
 
     // 실행 및 응답
     if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "프로필이 성공적으로 업데이트되었습니다."]);
+        echo json_encode(["success" => true, "message" => "프로필 설정 성공."],JSON_UNESCAPED_UNICODE);
     } else {
-        echo json_encode(["success" => false, "message" => "프로필 업데이트에 실패했습니다."]);
+        echo json_encode(["success" => false, "message" => "프로필 설정 실패."],JSON_UNESCAPED_UNICODE);
     }
 } catch (PDOException $e) {
-    echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
+    echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()],JSON_UNESCAPED_UNICODE);
 }
 ?>

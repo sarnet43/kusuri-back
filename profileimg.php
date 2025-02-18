@@ -14,7 +14,7 @@ $profileImg = $data['profileImg'];
 $userid = $_SESSION['user_id'];
 
 try {
-    // 프로필 이미지 업데이트
+    // 프로필 이미지 저장 
     $updateSql = "UPDATE user SET profile_img = :profileImg WHERE user_id = :userid";
     $stmt = $conn->prepare($updateSql);
     $stmt->bindParam(":profileImg", $profileImg, PDO::PARAM_STR);
@@ -22,11 +22,11 @@ try {
 
     // 실행 및 응답
     if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "프로필 이미지가 업데이트되었습니다."]);
+        echo json_encode(["success" => true, "message" => "성공했습니다."], JSON_UNESCAPED_UNICODE);
     } else {
-        echo json_encode(["success" => false, "message" => "프로필 이미지 업데이트 실패"]);
+        echo json_encode(["success" => false, "message" => "실패했습니다."], JSON_UNESCAPED_UNICODE);
     }
 } catch (PDOException $e) {
-    echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
+    echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()], JSON_UNESCAPED_UNICODE);
 }
 ?>

@@ -1,7 +1,7 @@
 <?php
 class Medicine {
     private $conn;
-    private $table_name = "medicines"; // 테이블 이름 설정
+    private $table_name = "medicine"; // 테이블 이름 설정
 
     // 생성자: DB 연결
     public function __construct($db) {
