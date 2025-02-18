@@ -20,15 +20,12 @@ class Medicine {
     // 특정 카테고리별 의약품 가져오기
     public function getMedicinesByCategory($category) {
         $query = "SELECT * FROM " . $this->table_name . " WHERE 
-                  cate_1 = :category OR 
-                  cate_2 = :category OR 
-                  cate_3 = :category OR 
-                  cate_4 = :category OR 
-                  cate_5 = :category";
+                  :category IN (cate_1, cate_2, cate_3, cate_4, cate_5)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":category", $category, PDO::PARAM_STR);
-        $stmt->execute();
+      
+        $stmt->execute([':category' => $category]); // 카테고리 파라미터 하나만 전달
         return $stmt;
     }
+    
 }
 ?>
