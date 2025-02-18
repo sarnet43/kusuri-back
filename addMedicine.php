@@ -14,6 +14,7 @@ $medicine = new Medicine($conn);
 $medData = $medicine->getMedicineById($med_id);
 $med_name_kr = $medData['med_name_kr'];
 $med_name_jp = $medData['med_name_jp']; 
+$med_explanation = $medData['med_explanation'];
 
 $insertSql = "INSERT INTO selectedmed(med_id, med_name_kr, med_name_jp, med_explanation, user_id) VALUES (:med_id, :med_name_kr, :med_name_jp, :med_explanation, :user_id)";
 $stmt = $conn->prepare($insertSql);

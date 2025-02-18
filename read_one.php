@@ -21,7 +21,9 @@ $medData = $medicine->getMedicineById($med_id);
 $med_name_kr = $medData['med_name_kr'];
 $med_name_jp = $medData['med_name_jp']; 
 $med_explanation = $medData['med_explanation'];
+$med_views = $medData['views'];
 
+//특정 약 데이터
 echo json_encode($medData, JSON_UNESCAPED_UNICODE);
  
 //최근 본 약 저장
@@ -39,4 +41,16 @@ if ($stmt->execute()) {
 } else {
     echo json_encode(["error" => "Failed to insert into watchedmed"]);
 }
+
+//조회수 업데이트
+$med_views = $med_views + 1;
+$updateSql = "UPDATE medicine SET views = :med_views WHERE med_id = :med_id";
+$result = $conn->prepare($updateSql);
+$result->bindParam(":med_views", $med_views, PDO::PARAM_INT);
+if ($result->execute()) {
+    echo json_encode(["success" => true]);
+} else {
+    echo json_encode(["error" => "조회수 업데이트 실패"]);
+}
+
 ?>
