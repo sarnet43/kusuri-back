@@ -8,6 +8,13 @@ class Medicine {
         $this->conn = $db;
     }
 
+    public function getMedicineAllDesc(){
+        $query = "SELECT * FROM ".$this->table_name . " ORDER BY view DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // 특정 ID에 해당하는 의약품 가져오기
     public function getMedicineById($med_id) {
         $query = "SELECT * FROM " . $this->table_name . " WHERE med_id = :med_id LIMIT 1";
