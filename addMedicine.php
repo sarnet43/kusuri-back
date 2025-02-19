@@ -1,8 +1,8 @@
 <?php
 session_start();
-header('Content-Type: application/json; charset=UTF-8');
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST");
 require_once ("core/db_conn.php");
 require_once ("core/Medicine.php");
 

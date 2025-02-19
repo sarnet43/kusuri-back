@@ -23,7 +23,7 @@ if($delete_type == 'all'){
     $deleteSql = "DELETE FROM alram WHERE id = :med_id";
     $stmt = $conn->prepare($deleteSql);
     $stmt->bindParam(":med_id", $med_id, PDO::PARAM_INT);
-    if($stmt->excute()){
+    if($stmt->execute()){
         echo json_encode(["success" => true, "message" => "삭제 성공"],JSON_UNESCAPED_UNICODE);
     } else{
         echo json_encode(["success" => false, "message" => "삭제 실패"],JSON_UNESCAPED_UNICODE);
