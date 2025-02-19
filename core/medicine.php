@@ -9,7 +9,7 @@ class Medicine {
     }
 
     public function getMedicineAllDesc(){
-        $query = "SELECT * FROM ".$this->table_name . " ORDER BY view DESC";
+        $query = "SELECT * FROM ".$this->table_name . " ORDER BY views DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
