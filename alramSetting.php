@@ -37,7 +37,7 @@ else{
     $days = $day_type; //'Mon', 'Tue'...
 }
 
-$insertSql = "INSERT INTO alarm (user_id, medicine, time, timeslot, days, start_day, last_day, state) 
+$insertSql = "INSERT INTO alram (user_id, medicine, time, timeslot, days, start_day, last_day, state) 
               VALUES (:userid, :medicine, :time, :timeslot, :days, :start_day, :last_day, :state)";
 $stmt = $conn->prepare($insertSql);
 $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);

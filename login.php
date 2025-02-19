@@ -31,6 +31,7 @@ try {
         // 비밀번호 검증
         if (password_verify($userpw, $user['user_pw'])) {
             // 세션 저장
+            $_SESSION['id'] = $user['id'];
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['username'] = $user['username'];
             

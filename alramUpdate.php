@@ -36,7 +36,7 @@ else{
     $days = $day_type; //'Mon', 'Tue'...
 }
 
-$updateSql = "UPDATE alram SET medicine = :medicine, time = :time, timeslot = :timeslot, days = :days, stast_day = :start_day, last_day = :last_day, state = :state
+$updateSql = "UPDATE alram SET medicine = :medicine, time = :time, timeslot = :timeslot, days = :days, start_day = :start_day, last_day = :last_day, state = :state
 WHERE user_id = :userid";
 $stmt = $conn->prepare($updateSql);
 $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);

@@ -24,7 +24,7 @@ $stmt->bindParam(":gender", $gender, PDO::PARAM_STR);
 $stmt->bindParam(":profile_img", $profile_img, PDO::PARAM_STR);
 $stmt->bindParam(":id", $id, PDO::PARAM_INT);
 
-if($stmt->excute()){
+if($stmt->execute()){
     echo json_encode(["success" => true, "message" => "프로필 수정 성공."],JSON_UNESCAPED_UNICODE);
 } else {
     echo json_encode(["success" => false, "message" => "프로필 수정 실패."],JSON_UNESCAPED_UNICODE);
