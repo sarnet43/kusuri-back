@@ -4,7 +4,7 @@ require_once("core/db_conn.php");
 
 $userid = $_SESSION['userid'];
 
-$selectSql = "SELECT * FROM alram WHERE user_id = :userid";
+$selectSql = "SELECT * FROM alarm WHERE user_id = :userid";
 $stmt = $conn->prepare($selectSql);
 $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
 
