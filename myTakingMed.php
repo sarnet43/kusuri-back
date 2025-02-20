@@ -39,7 +39,7 @@ try {
     $stmt->bindParam(":med_count", $medCount, PDO::PARAM_INT);
     $stmt->execute();
 
-    $pdo->commit(); // 트랜잭션 커밋
+    $conn->commit(); // 트랜잭션 커밋
 
     echo json_encode(["success" => true, "message" => "Medication saved successfully", "current_count" => $medCount]);
 } catch (Exception $e) {
