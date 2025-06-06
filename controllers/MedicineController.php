@@ -8,8 +8,14 @@ require_once ("core/Medicine.php");
 //약 검색
 function searchMedicine($conn) {
     $data = json_decode(file_get_contents("php://input"), true);
-    $med_search = '%'.$data['name'].'%';
+    $name = $data['name'] ?? ($_GET['name'] ?? null);
 
+    if (!$name) {
+        echo json_encode(["success" => false, "message" => "검색어(name)가 필요합니다."]);
+        return;
+    }
+
+    $med_search = '%' . $name . '%';
 
     $selectSql = "SELECT * FROM medicine WHERE med_name_kr LIKE :search";
     $stmt = $conn->prepare($selectSql);
@@ -22,6 +28,7 @@ function searchMedicine($conn) {
         echo json_encode(["success" => false, "message" => "검색 실패"]);
     }
 }
+
 
 //카테고리별 약
 function Medicine_cate($conn) {
@@ -145,7 +152,7 @@ function favoriteMedicine($conn) {
 
 //찜한 약 보기
 function getFavorites($conn) {
-    $userid = $_SESSION['user_id'];
+    $userid = $_SESSION['id'];
 
     $selectSql = "SELECT m.*
                     FROM favoritemedicine fm
@@ -173,7 +180,7 @@ function getMedicineRank($conn) {
 //복용중인 약 저장하기 
 function takingMedicine($conn) {
 
-    $userid = $_SESSION['user_id'];
+    $userid = $_SESSION['id'];
 
     // JSON 데이터 받아오기
     $data = json_decode(file_get_contents("php://input"), true);
@@ -190,13 +197,13 @@ function takingMedicine($conn) {
         $conn->beginTransaction(); // 트랜잭션 시작
 
         // 약 삽입
-        $stmt = $conn->prepare("INSERT INTO alarm (user_id, medicine) VALUES (:userid, :mad_name)");
+        $stmt = $conn->prepare("INSERT INTO takemedicine (medicine, user_id) VALUES ( :med_name, :userid)");
         $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
         $stmt->bindParam(":med_name", $med_name, PDO::PARAM_STR);
         $stmt->execute();
 
         // 약이 모두 추가된 후에 약 개수를 구해서 user 테이블의 taking_med 필드 업데이트
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM alarm WHERE user_id = :userid");
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM takemedicine WHERE user_id = :userid");
         $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
         $medCount = $stmt->fetchColumn();
 
@@ -212,6 +219,21 @@ function takingMedicine($conn) {
     } catch (Exception $e) {
         $conn->rollBack(); // 오류 발생 시 롤백
         echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
+    }
+}
+
+function mytakeMedicine($conn) {
+    $userid = $_SESSION['id'];
+
+    $selectSql = "SELECT * FROM takemedicine WHERE user_id = :userid";
+    $stmt = $conn->prepare($selectSql);
+    $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
+
+    if ($stmt->execute()) {
+        $selectedMeds = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(["success" => true, "message" => "불러오기 성공", "data" => $selectedMeds], JSON_UNESCAPED_UNICODE);
+    } else {
+        echo json_encode(["success" => false, "message" => "불러오기 실패" ], JSON_UNESCAPED_UNICODE);
     }
 }
 

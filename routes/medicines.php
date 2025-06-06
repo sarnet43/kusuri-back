@@ -23,8 +23,14 @@ switch($method) {
             getMedicineRank($conn);
         } elseif ($segments[2] === 'my-favorite-medicine') {
             require_once __DIR__ . '/../controllers/MedicineController.php';
+            getFavorites($conn);
+        } elseif ($segments[2] === 'watched-medicine') {
+            require_once __DIR__ . '/../controllers/MedicineController.php';
             watchedMedicine($conn);
-        } 
+        } elseif ($segments[2] === 'my-take-medicine') {
+            require_once __DIR__ . '/../controllers/MedicineController.php';
+            mytakeMedicine($conn);
+        }
 
         break;
 

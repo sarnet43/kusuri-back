@@ -5,7 +5,6 @@ require_once("core/db_conn.php");
 
 //로그인  
 function login($conn) {
-    session_start();
     $data = json_decode(file_get_contents("php://input"), true);
 
     if (!isset($data['userid'], $data['password'])) {
@@ -38,7 +37,7 @@ function login($conn) {
                     "message" => "로그인 성공",
                     "username" => $user['username'],
                     "gender" => $user['gender'],     
-                    "profile" => $user['profile+img']     
+                    "profile" => $user['profile_img']     
                 ], JSON_UNESCAPED_UNICODE);
             } else {
                 echo json_encode(["success" => false, "message" => "비밀번호가 틀렸습니다."],JSON_UNESCAPED_UNICODE);
@@ -53,42 +52,43 @@ function login($conn) {
 
 //회원가입 
 function joinus($conn) {
-
-    $data = json_decode(file_get_contents("php://input"), true);
-
-    if (!isset($data['userid'], $data['password'])) {
-        echo json_encode(["success" => false, "message" => "모든 필드를 입력하세요."],JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-
-    $userid = trim($data['userid']);
-    $password = $data['password'];
-
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-    $checkStmt = $conn->prepare("SELECT COUNT(*) FROM user WHERE user_id = :userid");
-    $checkStmt->bindParam(":userid", $userid);
-    $checkStmt->execute();
-    if ($checkStmt->fetchColumn() > 0) {
-        echo json_encode(["success" => false, "message" => "이미 존재하는 아이디입니다."], JSON_UNESCAPED_UNICODE);
-        return;
-    }
-
     try {
-        // 사용자 정보 삽입
-        $insertSql = "INSERT INTO user (user_id, user_pw) VALUES (:userid, :password)";
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        if (!isset($data['userid'], $data['password'])) {
+            echo json_encode(["success" => false, "message" => "모든 필드를 입력하세요."],JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        $userid = trim($data['userid']);
+        $password = $data['password'];
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        $checkStmt = $conn->prepare("SELECT COUNT(*) FROM `user` WHERE user_id = :userid");
+        $checkStmt->bindParam(":userid", $userid);
+        $checkStmt->execute();
+
+        if ($checkStmt->fetchColumn() > 0) {
+            echo json_encode(["success" => false, "message" => "이미 존재하는 아이디입니다."], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $insertSql = "INSERT INTO `user` (user_id, user_pw) VALUES (:userid, :password)";
         $stmt = $conn->prepare($insertSql);
         $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
         $stmt->bindParam(":password", $hashedPassword, PDO::PARAM_STR);
-        
+
         if ($stmt->execute()) {
             echo json_encode(["success" => true, "message" => "회원가입 성공"],JSON_UNESCAPED_UNICODE);
         } else {
             echo json_encode(["success" => false, "message" => "회원가입 실패"],JSON_UNESCAPED_UNICODE);
         }
+
     } catch (PDOException $e) {
         echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()],JSON_UNESCAPED_UNICODE);
     }
 }
+
 
 //중복 아이디 체크
 function checkId($conn) {
