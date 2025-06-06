@@ -9,7 +9,7 @@ function alarmSetting($conn) {
     $userid = $_SESSION['id']; 
     $data = json_decode(file_get_contents("php://input"), true);
 
-    $medicine = $data['medicine'];
+    $medicine = $data['medicine']; 
     $time = $data['time'];
     $timeslot = $data['timeslot'];
     $day_type = $data['day_type'];
