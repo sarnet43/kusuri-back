@@ -208,7 +208,7 @@ function takingMedicine($conn) {
         $medCount = $stmt->fetchColumn();
 
         // user 테이블의 taking_med 필드 업데이트
-        $stmt = $conn->prepare("UPDATE user SET taking_med = :med_count WHERE user_id = :userid");
+        $stmt = $conn->prepare("UPDATE user SET taking_med = :med_count WHERE id = :userid");
         $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
         $stmt->bindParam(":med_count", $medCount, PDO::PARAM_INT);
         $stmt->execute();
