@@ -122,8 +122,6 @@ function checkId($conn) {
 
 //첫 로그인시 정보 업데이트 
 function myinfo_1st_update($conn) {
-    session_start();
-    
     if (!isset($_SESSION['id'])) {
         echo json_encode(["success" => false, "message" => "세션이 만료되었거나 로그인되지 않았습니다."], JSON_UNESCAPED_UNICODE);
         exit;
@@ -135,12 +133,15 @@ function myinfo_1st_update($conn) {
     $gender = $data['gender'];
     $profile_img = $data['profile'];
     $userid = $_SESSION['id'];
+    $userid = $_SESSION['id'];
 
     try {
+        // 사용자 정보 업데이트
         $updateSql = "UPDATE user SET username = :username, gender = :gender, profile_img = :profile_img WHERE id = :userid";
         $stmt = $conn->prepare($updateSql);
         $stmt->bindParam(":username", $username, PDO::PARAM_STR);
         $stmt->bindParam(":gender", $gender, PDO::PARAM_STR);
+        $stmt->bindParam(":profile_img", $profile_img, PDO::PARAM_STR);
         $stmt->bindParam(":profile_img", $profile_img, PDO::PARAM_STR);
         $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
 
@@ -156,10 +157,6 @@ function myinfo_1st_update($conn) {
 
 //로그아웃 
 function logout() {
-    if (!session_id()) {
-    session_start();
-    }
-
     $_SESSION = array();
 
     // 세션 ID 쿠키 삭제
@@ -174,6 +171,7 @@ function logout() {
 
     // 세션 파일 삭제
     session_destroy();
+    echo json_encode(["success" => true, "message" => "로그아웃 되었습니다."], JSON_UNESCAPED_UNICODE);
 }
 
 //유저 정보 수정 
@@ -204,49 +202,4 @@ function updateUserInfo($conn) {
 
     
 }
-
-//복용 약약
-function takingMedicine($conn) {
-    $userid = $_SESSION['user_id'];
-
-    // JSON 데이터 받아오기
-    $data = json_decode(file_get_contents("php://input"), true);
-
-    // 약 이름이 없거나 비어 있으면 오류 반환
-    if (!isset($data['med_name']) || empty($data['med_name'])) {
-        echo json_encode(["success" => false, "message" => "Invalid medication data"]);
-        exit;
-    }
-
-    $med_name = $data['med_name'];
-
-    try {
-        $conn->beginTransaction(); // 트랜잭션 시작
-
-        // 약 삽입
-        $stmt = $pdo->prepare("INSERT INTO alarm (user_id, medicine) VALUES (:userid, :mad_name)");
-        $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
-        $stmt->bindParam(":med_name", $med_name, PDO::PARAM_STR);
-        $stmt->execute();
-
-        // 약이 모두 추가된 후에 약 개수를 구해서 user 테이블의 taking_med 필드 업데이트
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM alarm WHERE user_id = :userid");
-        $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
-        $medCount = $stmt->fetchColumn();
-
-        // user 테이블의 taking_med 필드 업데이트
-        $stmt = $conn->prepare("UPDATE user SET taking_med = :med_count WHERE user_id = :userid");
-        $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
-        $stmt->bindParam(":med_count", $medCount, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $conn->commit(); // 트랜잭션 커밋
-
-        echo json_encode(["success" => true, "message" => "Medication saved successfully", "current_count" => $medCount]);
-    } catch (Exception $e) {
-        $conn->rollBack(); // 오류 발생 시 롤백
-        echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
-    }
-}
-
 ?>

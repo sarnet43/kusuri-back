@@ -198,18 +198,19 @@ function takingMedicine($conn) {
 
         // 약 삽입
         $stmt = $conn->prepare("INSERT INTO takemedicine (medicine, user_id) VALUES ( :med_name, :userid)");
-        $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
+        $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
         $stmt->bindParam(":med_name", $med_name, PDO::PARAM_STR);
         $stmt->execute();
 
         // 약이 모두 추가된 후에 약 개수를 구해서 user 테이블의 taking_med 필드 업데이트
         $stmt = $conn->prepare("SELECT COUNT(*) FROM takemedicine WHERE user_id = :userid");
-        $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
+        $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
+        $stmt->execute();
         $medCount = $stmt->fetchColumn();
 
         // user 테이블의 taking_med 필드 업데이트
-        $stmt = $conn->prepare("UPDATE user SET taking_med = :med_count WHERE user_id = :userid");
-        $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
+        $stmt = $conn->prepare("UPDATE user SET taking_med = :med_count WHERE id = :userid");
+        $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
         $stmt->bindParam(":med_count", $medCount, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -234,6 +235,20 @@ function mytakeMedicine($conn) {
         echo json_encode(["success" => true, "message" => "불러오기 성공", "data" => $selectedMeds], JSON_UNESCAPED_UNICODE);
     } else {
         echo json_encode(["success" => false, "message" => "불러오기 실패" ], JSON_UNESCAPED_UNICODE);
+    }
+}
+
+function deleteTakeMedicine($conn) {
+    $userid = $_SESSION['id'];
+
+    $deleteSql = "DELETE FROM takemedicine WHERE user_id = :userid";
+    $stmt = $conn->prepare($selectSql);
+    $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
+
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true, "message" => "복용중인 약이 삭제되었습니다."], JSON_UNESCAPED_UNICODE);
+    } else {
+        echo json_encode(["success" => false, "message" => "복용중인 약 삭제를 실패했습니다" ], JSON_UNESCAPED_UNICODE);
     }
 }
 
