@@ -122,12 +122,19 @@ function checkId($conn) {
 
 //첫 로그인시 정보 업데이트 
 function myinfo_1st_update($conn) {
+    session_start();
+    
+    if (!isset($_SESSION['id'])) {
+        echo json_encode(["success" => false, "message" => "세션이 만료되었거나 로그인되지 않았습니다."], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
     $data = json_decode(file_get_contents("php://input"), true);
 
-    // 입력값 정리
     $username = trim($data['username']);
     $gender = $data['gender'];
     $profile_img = $data['profile'];
+    $userid = $_SESSION['id'];
     $userid = $_SESSION['id'];
 
     try {
@@ -137,16 +144,16 @@ function myinfo_1st_update($conn) {
         $stmt->bindParam(":username", $username, PDO::PARAM_STR);
         $stmt->bindParam(":gender", $gender, PDO::PARAM_STR);
         $stmt->bindParam(":profile_img", $profile_img, PDO::PARAM_STR);
+        $stmt->bindParam(":profile_img", $profile_img, PDO::PARAM_STR);
         $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
 
-        // 실행 및 응답
         if ($stmt->execute()) {
-            echo json_encode(["success" => true, "message" => "프로필 설정 성공."],JSON_UNESCAPED_UNICODE);
+            echo json_encode(["success" => true, "message" => "프로필 설정 성공."], JSON_UNESCAPED_UNICODE);
         } else {
-            echo json_encode(["success" => false, "message" => "프로필 설정 실패."],JSON_UNESCAPED_UNICODE);
+            echo json_encode(["success" => false, "message" => "프로필 설정 실패."], JSON_UNESCAPED_UNICODE);
         }
     } catch (PDOException $e) {
-        echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()],JSON_UNESCAPED_UNICODE);
+        echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()], JSON_UNESCAPED_UNICODE);
     }
 }
 
