@@ -122,8 +122,6 @@ function checkId($conn) {
 
 //첫 로그인시 정보 업데이트 
 function myinfo_1st_update($conn) {
-    session_start();
-    
     if (!isset($_SESSION['id'])) {
         echo json_encode(["success" => false, "message" => "세션이 만료되었거나 로그인되지 않았습니다."], JSON_UNESCAPED_UNICODE);
         exit;
