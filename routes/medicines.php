@@ -43,7 +43,12 @@ switch($method) {
             takingMedicine($conn);
         }
         break;
-
+        
+    case 'DELETE':
+        if ($segments[2] === 'take-medicine-delete') {
+            require_once __DIR__ . '/../controllers/MedicineController.php';
+            deleteTakeMedicine($conn);
+        }
     default:
         http_response_code(405);
         echo json_encode(['message' => 'Method Not Allowed']);
