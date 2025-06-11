@@ -1,0 +1,39 @@
+# 환경 설정
+.env
+.env.local
+.env.*.local
+
+# Composer
+/vendor/
+composer.lock
+
+# 로그, 캐시
+*.log
+/tmp/
+cache/
+
+# PHPStorm, VSCode 등 IDE 설정
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS 파일
+.DS_Store
+Thumbs.db
+
+# PHPUnit 결과
+.phpunit.result.cache
+
+# 세션 파일
+*.sess
+
+# 백업 파일
+*.bak
+*.swp
+
+# 사용자 업로드 (선택적으로 무시)
+uploads/
+
+# 빌드 결과물
+/build/

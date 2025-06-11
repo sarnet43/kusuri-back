@@ -29,7 +29,7 @@ switch ($method) {
             require_once __DIR__ . '/../controllers/UserController.php';
             updateUserInfo($conn);
         }
-        else if ($segments[2] === 'frist-info') {
+        else if ($segments[2] === 'first-info') {
             require_once __DIR__ . '/../controllers/UserController.php';
             myinfo_1st_update($conn);
         }
