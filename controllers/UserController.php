@@ -120,38 +120,48 @@ function checkId($conn) {
     }
 }
 
-//첫 로그인시 정보 업데이트 
+// 첫 로그인 시 정보 업데이트
 function myinfo_1st_update($conn) {
     if (!isset($_SESSION['id'])) {
-        echo json_encode(["success" => false, "message" => "세션이 만료되었거나 로그인되지 않았습니다."], JSON_UNESCAPED_UNICODE);
+        echo json_encode([
+            "success" => false,
+            "message" => "세션이 만료되었거나 로그인되지 않았습니다."
+        ], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
     $data = json_decode(file_get_contents("php://input"), true);
 
-    $username = trim($data['username']);
-    $gender = $data['gender'];
-    $profile_img = $data['profile'];
-    $userid = $_SESSION['id'];
+    $username = isset($data['username']) ? trim($data['username']) : "";
+    $gender = isset($data['gender']) ? $data['gender'] : "";
+    $profile_img = isset($data['profile']) ? $data['profile'] : "";  // profile 키가 없으면 빈 문자열
     $userid = $_SESSION['id'];
 
     try {
-        // 사용자 정보 업데이트
+        // 사용자 정보 업데이트 쿼리
         $updateSql = "UPDATE user SET username = :username, gender = :gender, profile_img = :profile_img WHERE id = :userid";
         $stmt = $conn->prepare($updateSql);
         $stmt->bindParam(":username", $username, PDO::PARAM_STR);
         $stmt->bindParam(":gender", $gender, PDO::PARAM_STR);
         $stmt->bindParam(":profile_img", $profile_img, PDO::PARAM_STR);
-        $stmt->bindParam(":profile_img", $profile_img, PDO::PARAM_STR);
         $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
 
         if ($stmt->execute()) {
-            echo json_encode(["success" => true, "message" => "프로필 설정 성공."], JSON_UNESCAPED_UNICODE);
+            echo json_encode([
+                "success" => true,
+                "message" => "프로필 설정 성공."
+            ], JSON_UNESCAPED_UNICODE);
         } else {
-            echo json_encode(["success" => false, "message" => "프로필 설정 실패."], JSON_UNESCAPED_UNICODE);
+            echo json_encode([
+                "success" => false,
+                "message" => "프로필 설정 실패."
+            ], JSON_UNESCAPED_UNICODE);
         }
     } catch (PDOException $e) {
-        echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()], JSON_UNESCAPED_UNICODE);
+        echo json_encode([
+            "success" => false,
+            "message" => "Database error: " . $e->getMessage()
+        ], JSON_UNESCAPED_UNICODE);
     }
 }
 
@@ -195,6 +205,7 @@ function updateUserInfo($conn) {
     $stmt->bindParam(":id", $id, PDO::PARAM_INT);
 
     if($stmt->execute()){
+        
         echo json_encode(["success" => true, "message" => "프로필 수정 성공."],JSON_UNESCAPED_UNICODE);
     } else {
         echo json_encode(["success" => false, "message" => "프로필 수정 실패."],JSON_UNESCAPED_UNICODE);
