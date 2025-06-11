@@ -238,19 +238,5 @@ function mytakeMedicine($conn) {
     }
 }
 
-function deleteTakeMedicine($conn) {
-    $userid = $_SESSION['id'];
-
-    $deleteSql = "DELETE FROM takemedicine WHERE user_id = :userid";
-    $stmt = $conn->prepare($selectSql);
-    $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
-
-    if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "복용중인 약이 삭제되었습니다."], JSON_UNESCAPED_UNICODE);
-    } else {
-        echo json_encode(["success" => false, "message" => "복용중인 약 삭제를 실패했습니다" ], JSON_UNESCAPED_UNICODE);
-    }
-}
-
 
 ?>
