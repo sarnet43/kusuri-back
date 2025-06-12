@@ -38,7 +38,7 @@ function alarmSetting($conn) {
     $insertSql = "INSERT INTO alarm (user_id, medicine, time, timeslot, days, start_day, last_day, state) 
                   VALUES (:userid, :medicine, :time, :timeslot, :days, :start_day, :last_day, :state)";
     $stmt = $conn->prepare($insertSql);
-    $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+    $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
     $stmt->bindParam(':medicine', $medicine, PDO::PARAM_STR);
     $stmt->bindParam(':time', $time, PDO::PARAM_STR);
     $stmt->bindParam(':timeslot', $timeslot, PDO::PARAM_STR);
@@ -85,10 +85,10 @@ function alarmUpdate($conn) {
         $days = $day_type;
     }
 
-    $updateSql = "UPDATE alarm SET medicine = :medicine, time = :time, timeslot = :timeslot, days = :days, start_day = :start_day, last_day = :last_day, state = :state
-                  WHERE user_id = :userid";
+    $updateSql = "UPDATE alarm SET time = :time, timeslot = :timeslot, days = :days, start_day = :start_day, last_day = :last_day, state = :state
+                  WHERE user_id = :userid and medicine = :medicine;";
     $stmt = $conn->prepare($updateSql);
-    $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+    $stmt->bindParam(':userid', $userid, PDO::PARAM_INT);
     $stmt->bindParam(':medicine', $medicine, PDO::PARAM_STR);
     $stmt->bindParam(':time', $time, PDO::PARAM_STR);
     $stmt->bindParam(':timeslot', $timeslot, PDO::PARAM_STR);
@@ -115,16 +115,17 @@ function alarmDelete($conn) {
     if ($delete_type == 'all') {
         $deleteSql = "DELETE FROM alarm WHERE user_id = :userid";
         $stmt = $conn->prepare($deleteSql);
-        $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
+        $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
         if ($stmt->execute()) {
             echo json_encode(["success" => true, "message" => "전체 삭제 성공"], JSON_UNESCAPED_UNICODE);
         } else {
             echo json_encode(["success" => false, "message" => "삭제 실패"], JSON_UNESCAPED_UNICODE);
         }
     } else {
-        $deleteSql = "DELETE FROM alarm WHERE id = :med_id";
+        $deleteSql = "DELETE FROM alarm WHERE id = :med_id and user_id = :userid";
         $stmt = $conn->prepare($deleteSql);
         $stmt->bindParam(":med_id", $med_id, PDO::PARAM_INT);
+        $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
         if ($stmt->execute()) {
             echo json_encode(["success" => true, "message" => "삭제 성공"], JSON_UNESCAPED_UNICODE);
         } else {
@@ -139,7 +140,7 @@ function getAlarm($conn) {
 
     $selectSql = "SELECT * FROM alarm WHERE user_id = :userid";
     $stmt = $conn->prepare($selectSql);
-    $stmt->bindParam(":userid", $userid, PDO::PARAM_STR);
+    $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
     $stmt->execute();
 
     $myAlarm = $stmt->fetchAll(PDO::FETCH_ASSOC);
