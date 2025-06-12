@@ -50,6 +50,7 @@ function alarmSetting($conn) {
     if ($stmt->execute()) {
         echo json_encode(["message" => "Alarm saved successfully"]);
     } else {
+        http_response_code(400);
         echo json_encode(["message" => "Error saving alarm"]);
     }
 }
