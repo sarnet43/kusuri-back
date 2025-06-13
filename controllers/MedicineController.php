@@ -103,7 +103,8 @@ function watchedMedicine($conn) {
     $selectSql = "SELECT m.*
                     FROM watchedMedicine wm
                     JOIN medicine m ON wm.med_id = m.med_id
-                    WHERE wm.user_id = :userid;";
+                    WHERE wm.user_id = :userid
+                    ORDER BY id desc;";
     $stmt = $conn->prepare($selectSql);
     $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
 
@@ -118,18 +119,16 @@ function watchedMedicine($conn) {
 //약 찜하기
 function favoriteMedicine($conn) {
     $userid = $_SESSION['id'] ?? null;
-    if (!$userid) {
-        echo json_encode(["error" => "Not logged in"]);
-        exit;
-    }
 
     $data = json_decode(file_get_contents("php://input"), true);
     if (!isset($data['med_id'])) {
         echo json_encode(["error" => "med_id not provided"]);
         exit;
     }
+
     $med_id = intval($data['med_id']);
 
+    // 약 존재 확인
     $medicine = new Medicine($conn);
     $medData = $medicine->getMedicineById($med_id);
     if (!$medData) {
@@ -137,18 +136,39 @@ function favoriteMedicine($conn) {
         exit;
     }
 
-    $insertSql = "INSERT INTO favoritemedicine(med_id, user_id)
-                  VALUES (:med_id, :user_id)";
-    $stmt = $conn->prepare($insertSql);
+    // 찜 여부 확인
+    $checkSql = "SELECT 1 FROM favoritemedicine WHERE med_id = :med_id AND user_id = :user_id";
+    $stmt = $conn->prepare($checkSql);
     $stmt->bindParam(":med_id", $med_id, PDO::PARAM_INT);
     $stmt->bindParam(":user_id", $userid, PDO::PARAM_INT);
+    $stmt->execute();
+    $isFavorite = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($stmt->execute()) {
-        echo json_encode(["success" => true]);
+    if ((bool)$isFavorite) {
+        // 이미 찜된 경우 => 찜 취소
+        $deleteSql = "DELETE FROM favoritemedicine WHERE med_id = :med_id AND user_id = :user_id";
+        $delStmt = $conn->prepare($deleteSql);
+        $delStmt->bindParam(":med_id", $med_id, PDO::PARAM_INT);
+        $delStmt->bindParam(":user_id", $userid, PDO::PARAM_INT);
+        if ($delStmt->execute()) {
+            echo json_encode(["success" => true, "favorited" => false, "message" => "찜이 취소되었습니다."]);
+        } else {
+            echo json_encode(["error" => "찜 취소 실패"]);
+        }
     } else {
-        echo json_encode(["error" => "Failed to insert into selectedmed"]);
+        // 찜 안 된 경우 => 찜 추가
+        $insertSql = "INSERT INTO favoritemedicine(med_id, user_id) VALUES (:med_id, :user_id)";
+        $insStmt = $conn->prepare($insertSql);
+        $insStmt->bindParam(":med_id", $med_id, PDO::PARAM_INT);
+        $insStmt->bindParam(":user_id", $userid, PDO::PARAM_INT);
+        if ($insStmt->execute()) {
+            echo json_encode(["success" => true, "favorited" => true, "message" => "찜에 추가되었습니다."]);
+        } else {
+            echo json_encode(["error" => "찜 추가 실패"]);
+        }
     }
 }
+
 
 //찜한 약 보기
 function getFavorites($conn) {
@@ -168,6 +188,28 @@ function getFavorites($conn) {
     } else {
         echo json_encode(["success" => false, "message" => "불러오기 실패" ], JSON_UNESCAPED_UNICODE);
     }
+}
+
+//찜 여부 확인
+function isFavoriteMedicine($conn) {
+    $userid = $_SESSION['id'];
+
+    $data = json_decode(file_get_contents("php://input"), true);
+    if (!isset($data['med_id'])) {
+        echo json_encode(["error" => "med_id not provided"]);
+        exit;
+    }
+
+    $med_id = intval($data['med_id']);
+
+    $sql = "SELECT 1 FROM favoritemedicine WHERE med_id = :med_id AND user_id = :user_id";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':med_id', $med_id, PDO::PARAM_INT);
+    $stmt->bindParam(':user_id', $userid, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $isFavorite = $stmt->fetchColumn();
+    echo json_encode(["favorited" => (bool)$isFavorite]);
 }
 
 //약 랭킹 가져오기 
@@ -240,10 +282,12 @@ function mytakeMedicine($conn) {
 
 function deleteTakeMedicine($conn) {
     $userid = $_SESSION['id'];
+    $medicine = $data['medicine'];
 
-    $deleteSql = "DELETE FROM takemedicine WHERE user_id = :userid";
+    $deleteSql = "DELETE FROM takemedicine WHERE user_id = :userid and medicine = :medicine";
     $stmt = $conn->prepare($selectSql);
     $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
+    $stmt->bindParam(":medicine", $medicine, PDO::PARAM_STR);
 
     if ($stmt->execute()) {
         echo json_encode(["success" => true, "message" => "복용중인 약이 삭제되었습니다."], JSON_UNESCAPED_UNICODE);

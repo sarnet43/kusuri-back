@@ -17,6 +17,19 @@ function alarmSetting($conn) {
     $last_day = $data['last_day'];
     $state = 'On';
 
+    $checkSql = "SELECT COUNT(*) FROM alarm WHERE user_id = :userid AND medicine = :medicine";
+    $checkStmt = $conn->prepare($checkSql);
+    $checkStmt->bindParam(':userid', $userid, PDO::PARAM_INT);
+    $checkStmt->bindParam(':medicine', $medicine, PDO::PARAM_STR);
+    $checkStmt->execute();
+    $count = $checkStmt->fetchColumn();
+
+    if ($count > 0) {
+        http_response_code(409);
+        echo json_encode(["message" => "이미 등록된 약입니다."]);
+        return;
+    }
+
     if ($day_type == '매일') {
         $days = "Mon,Tue,Wed,Thu,Fri,Sat,Sun";
     } elseif ($day_type == '격일') {
@@ -32,9 +45,10 @@ function alarmSetting($conn) {
             $days = implode(",", $days_array);
         }
     } else {
-        $days = $day_type; // 예: "Mon,Tue"
+        $days = $day_type; 
     }
 
+    // 알람 삽입
     $insertSql = "INSERT INTO alarm (user_id, medicine, time, timeslot, days, start_day, last_day, state) 
                   VALUES (:userid, :medicine, :time, :timeslot, :days, :start_day, :last_day, :state)";
     $stmt = $conn->prepare($insertSql);
@@ -54,6 +68,7 @@ function alarmSetting($conn) {
         echo json_encode(["message" => "Error saving alarm"]);
     }
 }
+
 
 // 알람 업데이트
 function alarmUpdate($conn) {
