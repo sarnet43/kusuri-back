@@ -69,6 +69,12 @@ function getOneMedicine($conn) {
 
         // 최근 본 약 저장
         if ($userid) {
+            $deleteSql = "DELETE FROM watchedmedicine WHERE user_id = :user_id AND med_id = :med_id";
+            $stmt = $conn->prepare($deleteSql);
+            $stmt->bindParam(":med_id", $med_id, PDO::PARAM_INT);
+            $stmt->bindParam(":user_id", $userid, PDO::PARAM_INT);
+            $stmt->execute();
+
             $insertSql = "INSERT INTO watchedmedicine(med_id, user_id)
                           VALUES (:med_id, :user_id)";
             $stmt = $conn->prepare($insertSql);
