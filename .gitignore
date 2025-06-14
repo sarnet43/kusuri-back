@@ -5,7 +5,7 @@
 
 # Composer
 /vendor/
-composer.lock
+# composer.lock
 
 # 로그, 캐시
 *.log
