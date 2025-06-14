@@ -199,14 +199,13 @@ function getFavorites($conn) {
 //찜 여부 확인
 function isFavoriteMedicine($conn) {
     $userid = $_SESSION['id'];
-
-    $data = json_decode(file_get_contents("php://input"), true);
-    if (!isset($data['med_id'])) {
+    
+    if (!isset($_GET['med_id'])) {
         echo json_encode(["error" => "med_id not provided"]);
         exit;
     }
 
-    $med_id = intval($data['med_id']);
+    $med_id = intval($_GET['med_id']);
 
     $sql = "SELECT 1 FROM favoritemedicine WHERE med_id = :med_id AND user_id = :user_id";
     $stmt = $conn->prepare($sql);

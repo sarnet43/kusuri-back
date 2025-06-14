@@ -30,6 +30,9 @@ switch($method) {
         } elseif ($segments[2] === 'my-take-medicine') {
             require_once __DIR__ . '/../controllers/MedicineController.php';
             mytakeMedicine($conn);
+        } elseif ($segments[2] === 'is-favorite-medicine') {
+            require_once __DIR__ . '/../controllers/MedicineController.php';
+            isFavoriteMedicine($conn);
         }
 
         break;
