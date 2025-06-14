@@ -126,7 +126,7 @@ function alarmDelete($conn) {
     $data = json_decode(file_get_contents("php://input"), true);
 
     $delete_type = $data['delete_type'];
-    $med_id = $data['med_id'];
+    $alarm_id = $data['id']; 
 
     if ($delete_type == 'all') {
         $deleteSql = "DELETE FROM alarm WHERE user_id = :userid";
@@ -138,9 +138,9 @@ function alarmDelete($conn) {
             echo json_encode(["success" => false, "message" => "삭제 실패"], JSON_UNESCAPED_UNICODE);
         }
     } else {
-        $deleteSql = "DELETE FROM alarm WHERE id = :med_id and user_id = :userid";
+        $deleteSql = "DELETE FROM alarm WHERE id = :alarm_id and user_id = :userid";
         $stmt = $conn->prepare($deleteSql);
-        $stmt->bindParam(":med_id", $med_id, PDO::PARAM_INT);
+        $stmt->bindParam(":med_id", $alarm_id, PDO::PARAM_INT);
         $stmt->bindParam(":userid", $userid, PDO::PARAM_INT);
         if ($stmt->execute()) {
             echo json_encode(["success" => true, "message" => "삭제 성공"], JSON_UNESCAPED_UNICODE);
