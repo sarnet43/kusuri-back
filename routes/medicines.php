@@ -7,30 +7,30 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch($method) {
     case 'GET':
-        if (isset($segments[2]) && $segments[2] === 'search') {
+        if (isset($segments[1]) && $segments[1] === 'search') {
             require_once __DIR__ . '/../controllers/MedicineController.php';
             searchMedicine($conn);
 
-        } elseif ($segments[2] === 'category') {
+        } elseif ($segments[1] === 'category') {
             require_once __DIR__ . '/../controllers/MedicineController.php';
             Medicine_cate($conn);
 
-        } elseif ($segments[2] === 'medicine') {
+        } elseif ($segments[1] === 'medicine') {
             require_once __DIR__ . '/../controllers/MedicineController.php';
             getOneMedicine($conn);
-        } elseif ($segments[2] === 'ranking') {
+        } elseif ($segments[1] === 'ranking') {
             require_once __DIR__ . '/../controllers/MedicineController.php';
             getMedicineRank($conn);
-        } elseif ($segments[2] === 'my-favorite-medicine') {
+        } elseif ($segments[1] === 'my-favorite-medicine') {
             require_once __DIR__ . '/../controllers/MedicineController.php';
             getFavorites($conn);
-        } elseif ($segments[2] === 'watched-medicine') {
+        } elseif ($segments[1] === 'watched-medicine') {
             require_once __DIR__ . '/../controllers/MedicineController.php';
             watchedMedicine($conn);
-        } elseif ($segments[2] === 'my-take-medicine') {
+        } elseif ($segments[1] === 'my-take-medicine') {
             require_once __DIR__ . '/../controllers/MedicineController.php';
             mytakeMedicine($conn);
-        } elseif ($segments[2] === 'is-favorite-medicine') {
+        } elseif ($segments[1] === 'is-favorite-medicine') {
             require_once __DIR__ . '/../controllers/MedicineController.php';
             isFavoriteMedicine($conn);
         }
@@ -38,17 +38,17 @@ switch($method) {
         break;
 
     case 'POST':
-        if ($segments[2] === 'favorite') {
+        if ($segments[1] === 'favorite') {
             require_once __DIR__ . '/../controllers/MedicineController.php';
             favoriteMedicine($conn);
-        } elseif ($segments[2] === 'taking-medicine') {
+        } elseif ($segments[1] === 'taking-medicine') {
             require_once __DIR__. '/../controllers/MedicineController.php';
             takingMedicine($conn);
         }
         break;
         
     case 'DELETE':
-        if ($segments[2] === 'take-medicine-delete') {
+        if ($segments[1] === 'take-medicine-delete') {
             require_once __DIR__ . '/../controllers/MedicineController.php';
             deleteTakeMedicine($conn);
         }

@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 $request = trim($_SERVER['REQUEST_URI'], '/');
 $segments = explode('/', $request);
 
-$resource = $segments[1] ?? '';
+$resource = $segments[0] ?? '';
 
 $routesPath = __DIR__ . "/routes/{$resource}.php";
 
