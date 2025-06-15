@@ -3,7 +3,7 @@ header('Content-Type: application/json; charset=utf-8');
 session_start();
 
 require_once ("core/db_conn.php");
-require_once ("core/Medicine.php");
+require_once ("core/medicine.php");
 
 //약 검색
 function searchMedicine($conn) {
