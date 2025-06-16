@@ -39,6 +39,7 @@ switch ($method) {
             require_once __DIR__ . '/../controllers/UserController.php';
             getUser($conn);
         }
+        break;
     default:
         http_response_code(405);
         echo json_encode(['message' => 'Method Not Allowed']);
