@@ -213,4 +213,19 @@ function updateUserInfo($conn) {
 
     
 }
+
+function getUser($conn) {
+    $id = $_SESSION['id'];
+
+    $selectSql = "SELECT * FROM user WHERE id = :id";
+    $stmt = $conn->prepare($selectSql);
+    $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+    $stmt->execute();
+    if($stmt->execute()){
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        echo json_encode(["success" => true, "data" => $user],JSON_UNESCAPED_UNICODE);
+    } else {
+        echo json_encode(["success" => false, "message" => "유저 정보를 가져오는데 실패했습니다."],JSON_UNESCAPED_UNICODE);
+    }
+}
 ?>
