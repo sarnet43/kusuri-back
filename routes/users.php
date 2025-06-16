@@ -34,6 +34,11 @@ switch ($method) {
             myinfo_1st_update($conn);
         }
         break;
+    case 'GET':
+        if ($segments[1] === 'user') {
+            require_once __DIR__ . '/../controllers/UserController.php';
+            getUser($conn);
+        }
     default:
         http_response_code(405);
         echo json_encode(['message' => 'Method Not Allowed']);
