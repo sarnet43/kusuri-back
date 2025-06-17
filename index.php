@@ -1,7 +1,12 @@
 <?php
 ini_set('session.cookie_secure', '1'); 
-ini_set('session.cookie_httponly', '1'); 
-session_save_path("/tmp");
+ini_set('session.cookie_httponly', '1');
+ini_set('session.cookie_samesite', 'None'); 
+session_set_cookie_params([
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'None'
+]);
 session_start();
 
 $origin = "https://kusuri-green.vercel.app";
