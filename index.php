@@ -1,5 +1,5 @@
 <?php
-$origin = "http://localhost:3000";
+$origin = "https://kusuri-l90sno61k-soom4478s-projects.vercel.app";
 header("Access-Control-Allow-Origin: $origin");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
