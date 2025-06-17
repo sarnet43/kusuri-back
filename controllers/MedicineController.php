@@ -103,7 +103,10 @@ function getOneMedicine($conn) {
 
 //봤던 약 불러오기
 function watchedMedicine($conn) {
-    $userid = $_SESSION['id'];
+    if (!isset($_SESSION['id'])) {
+        echo json_encode(["error" => "User not logged in"]);
+        exit;
+    }
 
     $selectSql = "SELECT m.*
                     FROM watchedmedicine wm
@@ -177,7 +180,10 @@ function favoriteMedicine($conn) {
 
 //찜한 약 보기
 function getFavorites($conn) {
-    $userid = $_SESSION['id'];
+    if (!isset($_SESSION['id'])) {
+        echo json_encode(["error" => "User not logged in"]);
+        exit;
+    }
 
     $selectSql = "SELECT m.*
                     FROM favoritemedicine fm
