@@ -33,7 +33,6 @@ function searchMedicine($conn) {
 //카테고리별 약
 function Medicine_cate($conn) {
     $medicine = new Medicine($conn);
-    // GET 방식이면 $_GET['type'] 사용
     $category = isset($_GET['type']) ? $_GET['type'] : null;
 
     if (!$category) {
@@ -48,7 +47,7 @@ function Medicine_cate($conn) {
 
 //약 한 개만
 function getOneMedicine($conn) {
-    if (!isset($_GET['id'])) {
+    if (!isset($_GET['med_id'])) {
         echo json_encode(["error" => "med_id not provided"]);
         exit;
     }
