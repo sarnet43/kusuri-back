@@ -1,7 +1,5 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-session_start();
-
 require_once("core/db_conn.php");
 
 // 알람 세팅

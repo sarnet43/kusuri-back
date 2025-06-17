@@ -1,5 +1,10 @@
 <?php
-$origin = "https://kusuri-l90sno61k-soom4478s-projects.vercel.app";
+ini_set('session.cookie_secure', '1'); 
+ini_set('session.cookie_httponly', '1'); 
+session_save_path("/tmp");
+session_start();
+
+$origin = "https://kusuri-green.vercel.app";
 header("Access-Control-Allow-Origin: $origin");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
