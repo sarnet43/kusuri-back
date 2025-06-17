@@ -53,7 +53,7 @@ function getOneMedicine($conn) {
         exit;
     }
 
-    $med_id = intval($_GET['id']);
+    $med_id = intval($_GET['med_id']);
     $userid = $_SESSION['id'] ?? null;
 
     $medicine = new Medicine($conn);
