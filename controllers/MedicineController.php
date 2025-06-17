@@ -107,7 +107,7 @@ function watchedMedicine($conn) {
     $userid = $_SESSION['id'];
 
     $selectSql = "SELECT m.*
-                    FROM watchedMedicine wm
+                    FROM watchedmedicine wm
                     JOIN medicine m ON wm.med_id = m.med_id
                     WHERE wm.user_id = :userid
                     ORDER BY id desc;";
