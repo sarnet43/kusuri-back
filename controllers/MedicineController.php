@@ -49,10 +49,14 @@ function getOneMedicine($conn) {
         echo json_encode(["error" => "med_id not provided"]);
         exit;
     }
-
     $med_id = intval($_GET['med_id']);
-    $userid = $_SESSION['id'] ?? null;
 
+    if (!isset($_SESSION['id'])) {
+        echo json_encode(["error" => "User not logged in"]);
+        exit;
+    }
+    $userid = $_SESSION['id'];
+    
     $medicine = new Medicine($conn);
     $medData = $medicine->getMedicineById($med_id);
 
@@ -105,6 +109,7 @@ function watchedMedicine($conn) {
         echo json_encode(["error" => "User not logged in"]);
         exit;
     }
+    $userid = $_SESSION['id'];
 
     $selectSql = "SELECT m.*
                     FROM watchedmedicine wm
@@ -183,6 +188,7 @@ function getFavorites($conn) {
         exit;
     }
 
+    $userid = $_SESSION['id'];
     $selectSql = "SELECT m.*
                     FROM favoritemedicine fm
                     JOIN medicine m ON fm.med_id = m.med_id
