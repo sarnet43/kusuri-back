@@ -2,6 +2,7 @@
 session_set_cookie_params([
     'lifetime' => 43200, 
     'secure' => true,
+    'path' => '/',
     'httponly' => true,
     'samesite' => 'None'
 ]);
