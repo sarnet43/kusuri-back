@@ -8,6 +8,10 @@ session_set_cookie_params([
 ]);
 session_start();
 
+error_log('현재 경로: ' . $_SERVER['REQUEST_URI']);
+error_log('받은 쿠키: ' . print_r($_COOKIE, true));
+error_log('세션 ID: ' . session_id());
+
 $origin = "https://kusuri-green.vercel.app";
 header("Access-Control-Allow-Origin: $origin");
 header("Access-Control-Allow-Credentials: true");
