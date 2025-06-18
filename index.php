@@ -1,8 +1,6 @@
 <?php
-ini_set('session.cookie_secure', '1'); 
-ini_set('session.cookie_httponly', '1');
-ini_set('session.cookie_samesite', 'None'); 
 session_set_cookie_params([
+    'lifetime' => 43200, 
     'secure' => true,
     'httponly' => true,
     'samesite' => 'None'
@@ -12,6 +10,7 @@ session_start();
 $origin = "https://kusuri-green.vercel.app";
 header("Access-Control-Allow-Origin: $origin");
 header("Access-Control-Allow-Credentials: true");
+header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 
